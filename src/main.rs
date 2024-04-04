@@ -1,12 +1,11 @@
+use glob::glob;
 use serde::Deserialize;
 use serde_json;
-use std::{fs, f32::consts::E, vec};
-use glob::glob;
 use std::os::unix::fs::PermissionsExt;
+use std::{f32::consts::E, fs, vec};
 
 // load the regex-fules.json file to provide configs
 const JSON: &str = include_str!("../rules.json");
-
 
 #[derive(Deserialize, Debug)]
 struct ComplianceRule {
@@ -41,7 +40,7 @@ fn load_rules() -> Vec<ComplianceRule> {
 }
 
 fn main() {
-    let rules = load_rules(); 
+    let rules = load_rules();
     let mut failed: bool = false;
     for rule in rules {
         let mut seen_files: Vec<String> = Vec::new();
@@ -57,8 +56,6 @@ fn main() {
                         failed = true;
                         println!("[FAIL] incorrect permissions: {:?}", path);
                     }
-
-
                 }
                 Err(e) => println!("{:?}", e),
             }
@@ -66,10 +63,12 @@ fn main() {
         for file in &rule.required_files {
             if !seen_files.contains(&file) {
                 failed = true;
-                println!("[FAIL] required file {file} not found in {}", rule.path_regex);
+                println!(
+                    "[FAIL] required file {file} not found in {}",
+                    rule.path_regex
+                );
             }
         }
-        
     }
     if failed {
         std::process::exit(2);
