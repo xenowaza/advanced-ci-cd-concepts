@@ -4,14 +4,25 @@
 
 name: Rust Code Quality
 
-on: [pull_request]
+on:
+  workflow_dispatch:
 
 jobs:
-  lab_build:
-    runs-on: macos-latest
+  rust_lint:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Check Cargo FMT
       run: cargo fmt --check
+  test_n_build:
+    needs: rust_lint
+    strategy:
+      matrix:
+        os: [ macos-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Test Rust code
+      run: cargo test
     - name: Make sure Rust builds correctly
       run: cargo build
