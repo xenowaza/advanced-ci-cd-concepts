@@ -7,11 +7,8 @@ name: Rust Code Quality
 on: [pull_request]
 
 jobs:
-  matrix_build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
+  lab_build:
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - name: Check Cargo FMT
